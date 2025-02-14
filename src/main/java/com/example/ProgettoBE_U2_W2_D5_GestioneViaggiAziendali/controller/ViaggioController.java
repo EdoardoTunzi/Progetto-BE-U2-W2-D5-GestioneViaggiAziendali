@@ -61,4 +61,9 @@ public class ViaggioController {
             return new ResponseEntity<>("Il viaggio è stato modificato correttamente", HttpStatus.OK);
         }
     }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteViaggio(@PathVariable long id) {
+        return new ResponseEntity<>(viaggioService.deleteVIaggio(id), HttpStatus.OK);
+    }
 }

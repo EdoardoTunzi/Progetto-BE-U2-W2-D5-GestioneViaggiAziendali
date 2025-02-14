@@ -68,6 +68,18 @@ public class ViaggioService {
         }
     }
 
+    //deleteByID
+    public String deleteVIaggio(long id) {
+        Optional<Viaggio> viaggioTrovato = viaggioRepo.findById(id);
+        if (viaggioTrovato.isPresent()){
+            viaggioRepo.delete(viaggioTrovato.get());
+            return "Viaggio con id: " + id + " eliminato con successo!";
+        } else {
+            throw new RuntimeException("Errore nel delete! Nessun elemento trovato con questo id");
+        }
+
+    }
+
     //metodi travaso DTO
 
     //Viaggio a Viaggio DTO
