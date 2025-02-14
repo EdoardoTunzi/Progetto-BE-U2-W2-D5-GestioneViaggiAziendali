@@ -3,11 +3,13 @@ package com.example.ProgettoBE_U2_W2_D5_GestioneViaggiAziendali.model;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
+@NoArgsConstructor
 @Entity(name="dipendenti")
 @Data
 public class Dipendente {
