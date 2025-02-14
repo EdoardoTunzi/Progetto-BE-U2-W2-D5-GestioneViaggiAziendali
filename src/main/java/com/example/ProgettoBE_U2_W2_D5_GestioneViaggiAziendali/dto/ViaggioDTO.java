@@ -15,7 +15,7 @@ public class ViaggioDTO {
     @Size(min = 3, max = 15, message = "Il nome della destinazione deve essere lungo minimo 4 e massimo 15 caratteri")
     private String destinazione;
 
-    @NotNull(message = "Il campo è obbligatorio")
+    @NotNull(message = "Il campo data è obbligatorio")
     private LocalDate data;
 
     @NotNull(message = "Il campo stato è obbligatorio")

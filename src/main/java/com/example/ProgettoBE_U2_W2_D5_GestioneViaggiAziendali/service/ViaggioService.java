@@ -4,7 +4,14 @@ import com.example.ProgettoBE_U2_W2_D5_GestioneViaggiAziendali.dto.ViaggioDTO;
 import com.example.ProgettoBE_U2_W2_D5_GestioneViaggiAziendali.model.Viaggio;
 import com.example.ProgettoBE_U2_W2_D5_GestioneViaggiAziendali.repository.ViaggioDAORepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ViaggioService {
@@ -20,7 +27,46 @@ public class ViaggioService {
         return viaggioSalvato.getId();
     }
 
+    //getAll
+    public Page<ViaggioDTO> getAllViaggio(Pageable page) {
+        Page<Viaggio> listaViaggi = viaggioRepo.findAll(page);
+        List<ViaggioDTO> listaDto = new ArrayList<>();
 
+        for (Viaggio viaggio : listaViaggi.getContent()) {
+            ViaggioDTO dto = fromViaggioToViaggioDTO(viaggio);
+            listaDto.add(dto);
+        }
+
+        Page<ViaggioDTO> listaPage = new PageImpl<>(listaDto);
+        return listaPage;
+    }
+
+    //getById
+    public ViaggioDTO findViaggioById(long id) {
+        Optional<Viaggio> viaggio = viaggioRepo.findById(id);
+
+        if (viaggio.isPresent()) {
+            ViaggioDTO viaggiDto = fromViaggioToViaggioDTO(viaggio.get());
+            return viaggiDto;
+        } else {
+            throw new RuntimeException("Nessun viaggio trovato con l'id inserito");
+        }
+    }
+
+    //put- sostituisciViaggioById
+    public void updateViaggio(ViaggioDTO viaggioDTO, long id) {
+        Optional<Viaggio> viaggioTrovato = viaggioRepo.findById(id);
+
+        if(viaggioTrovato.isPresent()) {
+            Viaggio viaggio = viaggioTrovato.get();
+            viaggio.setDestinazione(viaggioDTO.getDestinazione());
+            viaggio.setData(viaggioDTO.getData());
+            viaggio.setStato(viaggioDTO.getStato());
+            viaggioRepo.save(viaggio);
+        } else {
+            throw new RuntimeException("Errore nella modifica del viaggio inserito");
+        }
+    }
 
     //metodi travaso DTO
 
@@ -32,6 +78,7 @@ public class ViaggioService {
         viaggio.setStato(viaggioDTO.getStato());
         return viaggio;
     }
+
     //ViaggioDTo a Viaggio
     public ViaggioDTO fromViaggioToViaggioDTO(Viaggio viaggio) {
         ViaggioDTO viaggioDTO = new ViaggioDTO();
