@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.swing.text.html.Option;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -96,6 +97,12 @@ public class DipendenteService {
         if(dipendenteTrovato.isPresent() && viaggioTrovato.isPresent()) {
             Dipendente dipendente = dipendenteTrovato.get();
             Viaggio viaggio = viaggioTrovato.get();
+            LocalDate dataPrenotazione = prenotazioneDTO.getData();
+
+            List<Prenotazione> prenotazioniEsistenti = prenotazioneRepo.findByDataAndDipendente(dataPrenotazione, dipendente);
+            if(!prenotazioniEsistenti.isEmpty()) {
+                throw new RuntimeException("Il dipendente selezionato ha gia una prenotazione con la stessa data");
+            }
             Prenotazione prenotazione = new Prenotazione();
             prenotazione.setDipendente(dipendente);
             prenotazione.setViaggio(viaggio);
