@@ -1,5 +1,7 @@
 package com.example.ProgettoBE_U2_W2_D5_GestioneViaggiAziendali.controller;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import com.example.ProgettoBE_U2_W2_D5_GestioneViaggiAziendali.dto.DipendenteDTO;
 import com.example.ProgettoBE_U2_W2_D5_GestioneViaggiAziendali.dto.PrenotazioneDTO;
 import com.example.ProgettoBE_U2_W2_D5_GestioneViaggiAziendali.service.DipendenteService;
@@ -12,12 +14,18 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/dipendente")
 public class DipendenteController {
     @Autowired
     DipendenteService dipendenteService;
+    @Autowired
+    Cloudinary cloudinaryConfig;
 
     @GetMapping(value = "", produces = "application/json")
     public ResponseEntity<Page<DipendenteDTO>> getAllDipendenti(Pageable page) {
@@ -44,7 +52,34 @@ public class DipendenteController {
         }
 
         Long idNuovoDipendente = dipendenteService.saveDipendente(dipendenteDTO);
-        return new ResponseEntity<>("Viaggio inserito nel DB con id: " + idNuovoDipendente, HttpStatus.CREATED);
+        return new ResponseEntity<>("Dipendente inserito nel DB con id: " + idNuovoDipendente, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/profilePic")
+    public ResponseEntity<?> nuovoDipendenteConImmagine(@RequestPart("profilePic") MultipartFile profilePic, @RequestPart @Validated DipendenteDTO dipendenteDTO, BindingResult validation) {
+
+        if (validation.hasErrors()) {
+            String messaggioErrori = "ERRORE DI VALIDAZIONE \n";
+
+            for (ObjectError errore : validation.getAllErrors()) {
+                messaggioErrori += errore.getDefaultMessage() + "\n";
+            }
+            return new ResponseEntity<>(messaggioErrori, HttpStatus.BAD_REQUEST);
+        }
+
+        try {
+
+            Map mappa = cloudinaryConfig.uploader().upload(profilePic.getBytes(), ObjectUtils.emptyMap());
+            String urlImage = mappa.get("secure_url").toString();
+            dipendenteDTO.setProfilePic(urlImage);
+
+            Long idNuovoDipendente = dipendenteService.saveDipendente(dipendenteDTO);
+            return new ResponseEntity<>("Dipendente inserito nel DB con id: " + idNuovoDipendente, HttpStatus.CREATED);
+        } catch (IOException e) {
+            throw new RuntimeException("Errore nel caricamento dell'immagine: " + e );
+        }
+
+
     }
 
     @PutMapping("/modifica/{id}")
