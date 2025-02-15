@@ -11,5 +11,6 @@ import java.util.List;
 
 public interface PrenotazioneDAORepository extends JpaRepository<Prenotazione,Long> {
     List<Prenotazione> findByDataAndDipendente(LocalDate data,Dipendente dipendente);
+    List<Prenotazione> findByDipendente(Dipendente dipendente);
 }
 

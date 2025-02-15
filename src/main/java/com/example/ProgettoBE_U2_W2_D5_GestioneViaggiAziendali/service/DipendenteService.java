@@ -29,6 +29,7 @@ public class DipendenteService {
     ViaggioDAORepository viaggioRepo;
     @Autowired
     PrenotazioneDAORepository prenotazioneRepo;
+
     //salvataggio
     public Long saveDipendente(DipendenteDTO dipendenteDTO) {
         Dipendente dipendenteInserito = fromDipendenteDTOToDipendente(dipendenteDTO);
@@ -61,11 +62,12 @@ public class DipendenteService {
             throw new RuntimeException("Nessun dipendente trovato con l'id inserito");
         }
     }
+
     //put- sostituisciDipendenteById
     public void updateDipendente(DipendenteDTO dipendenteDTO, long id) {
         Optional<Dipendente> dipendenteTrovato = dipendenteRepo.findById(id);
 
-        if(dipendenteTrovato.isPresent()) {
+        if (dipendenteTrovato.isPresent()) {
             Dipendente dipendente = dipendenteTrovato.get();
             dipendente.setUsername(dipendenteDTO.getUsername());
             dipendente.setNome(dipendenteDTO.getNome());
@@ -81,7 +83,7 @@ public class DipendenteService {
     //deleteByID
     public String deleteDipendente(long id) {
         Optional<Dipendente> dipendenteTrovato = dipendenteRepo.findById(id);
-        if (dipendenteTrovato.isPresent()){
+        if (dipendenteTrovato.isPresent()) {
             dipendenteRepo.delete(dipendenteTrovato.get());
             return "Dipendente con id: " + id + " eliminato con successo!";
         } else {
@@ -94,27 +96,31 @@ public class DipendenteService {
     public void creaPrenotazione(PrenotazioneDTO prenotazioneDTO) {
         Optional<Dipendente> dipendenteTrovato = dipendenteRepo.findById(prenotazioneDTO.getDipendente_id());
         Optional<Viaggio> viaggioTrovato = viaggioRepo.findById(prenotazioneDTO.getViaggio_id());
-        if(dipendenteTrovato.isPresent() && viaggioTrovato.isPresent()) {
+        if (dipendenteTrovato.isPresent() && viaggioTrovato.isPresent()) {
             Dipendente dipendente = dipendenteTrovato.get();
             Viaggio viaggio = viaggioTrovato.get();
             LocalDate dataPrenotazione = prenotazioneDTO.getData();
 
-            List<Prenotazione> prenotazioniEsistenti = prenotazioneRepo.findByDataAndDipendente(dataPrenotazione, dipendente);
-            if(!prenotazioniEsistenti.isEmpty()) {
+            List<Prenotazione> prenotazioniEsistentiConLaStessaData = prenotazioneRepo.findByDataAndDipendente(dataPrenotazione, dipendente);
+            List<Prenotazione> prenotazioniDelDipendente = prenotazioneRepo.findByDipendente(dipendente);
+            //controllo se ha gia una prenotazione nella stessa data
+            if (!prenotazioniEsistentiConLaStessaData.isEmpty()) {
                 throw new RuntimeException("Il dipendente selezionato ha gia una prenotazione con la stessa data");
+            } else if (!prenotazioniDelDipendente.isEmpty()) {
+                throw new RuntimeException("Questo dipendente non può prenotare altri viaggi, perchè ha gia un viaggio prenotato!");
+            } else {
+                Prenotazione prenotazione = new Prenotazione();
+                prenotazione.setDipendente(dipendente);
+                prenotazione.setViaggio(viaggio);
+                prenotazione.setData(prenotazioneDTO.getData());
+                prenotazione.setNotePreferenze(prenotazioneDTO.getNotePreferenze());
+                prenotazioneRepo.save(prenotazione);
             }
-            Prenotazione prenotazione = new Prenotazione();
-            prenotazione.setDipendente(dipendente);
-            prenotazione.setViaggio(viaggio);
-            prenotazione.setData(prenotazioneDTO.getData());
-            prenotazione.setNotePreferenze(prenotazioneDTO.getNotePreferenze());
-            prenotazioneRepo.save(prenotazione);
+
         } else {
             throw new RuntimeException(" L'id del viaggio o del dipendente non è stato trovato");
         }
     }
-
-
 
 
     //--------------------------metodi travaso DTO----------------------
