@@ -2,6 +2,8 @@ package com.example.ProgettoBE_U2_W2_D5_GestioneViaggiAziendali.service;
 
 import com.example.ProgettoBE_U2_W2_D5_GestioneViaggiAziendali.dto.DipendenteDTO;
 import com.example.ProgettoBE_U2_W2_D5_GestioneViaggiAziendali.dto.PrenotazioneDTO;
+import com.example.ProgettoBE_U2_W2_D5_GestioneViaggiAziendali.exceptions.BadRequestException;
+import com.example.ProgettoBE_U2_W2_D5_GestioneViaggiAziendali.exceptions.NotFoundException;
 import com.example.ProgettoBE_U2_W2_D5_GestioneViaggiAziendali.model.Dipendente;
 import com.example.ProgettoBE_U2_W2_D5_GestioneViaggiAziendali.model.Prenotazione;
 import com.example.ProgettoBE_U2_W2_D5_GestioneViaggiAziendali.model.Viaggio;
@@ -58,7 +60,7 @@ public class DipendenteService {
             DipendenteDTO dipendenteDto = fromDipendenteToDipendenteDTO(dipendente.get());
             return dipendenteDto;
         } else {
-            throw new RuntimeException("Nessun dipendente trovato con l'id: " + id);
+            throw new NotFoundException("Nessun dipendente trovato con l'id: " + id);
         }
     }
 
@@ -75,7 +77,7 @@ public class DipendenteService {
             dipendente.setProfilePic(dipendenteDTO.getProfilePic());
             dipendenteRepo.save(dipendente);
         } else {
-            throw new RuntimeException("Errore nella modifica del dipendente inserito");
+            throw new NotFoundException("Errore nella modifica del dipendente inserito. Dipendente non trovato!");
         }
     }
 
@@ -86,7 +88,7 @@ public class DipendenteService {
             dipendenteRepo.delete(dipendenteTrovato.get());
             return "Dipendente con id: " + id + " eliminato con successo!";
         } else {
-            throw new RuntimeException("Errore nel delete! Nessun dipendente trovato con id: " + id);
+            throw new NotFoundException("Errore nel delete! Nessun dipendente trovato con id: " + id);
         }
 
     }
@@ -103,11 +105,11 @@ public class DipendenteService {
             List<Prenotazione> prenotazioniEsistentiConLaStessaData = prenotazioneRepo.findByDataAndDipendente(dataPrenotazione, dipendente);
             List<Prenotazione> prenotazioniDelDipendente = prenotazioneRepo.findByDipendente(dipendente);
             //prima di creare la prenotazione, controllo che il dipendente
-            //non abbia gia una prenotazione nella stessa data e altre prenotazioni
+            //non abbia gia una prenotazione nella stessa data o altre prenotazioni
             if (!prenotazioniEsistentiConLaStessaData.isEmpty()) {
-                throw new RuntimeException("Il dipendente selezionato ha gia una prenotazione con la stessa data");
+                throw new BadRequestException("Il dipendente selezionato ha gia una prenotazione per questa data");
             } else if (!prenotazioniDelDipendente.isEmpty()) {
-                throw new RuntimeException("Questo dipendente non può prenotare altri viaggi, perchè ha gia un viaggio prenotato!");
+                throw new BadRequestException("Questo dipendente non può prenotare altri viaggi, perchè ha già prenotato un viaggio!");
             } else {
                 Prenotazione prenotazione = new Prenotazione();
                 prenotazione.setDipendente(dipendente);
@@ -117,7 +119,7 @@ public class DipendenteService {
                 prenotazioneRepo.save(prenotazione);
             }
         } else {
-            throw new RuntimeException(" L'id del viaggio o del dipendente non è stato trovato");
+            throw new NotFoundException(" L'id del viaggio o del dipendente non è stato trovato");
         }
     }
 

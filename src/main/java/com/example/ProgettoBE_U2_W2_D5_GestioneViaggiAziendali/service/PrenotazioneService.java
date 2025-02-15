@@ -2,6 +2,7 @@ package com.example.ProgettoBE_U2_W2_D5_GestioneViaggiAziendali.service;
 
 
 import com.example.ProgettoBE_U2_W2_D5_GestioneViaggiAziendali.dto.PrenotazioneDTO;
+import com.example.ProgettoBE_U2_W2_D5_GestioneViaggiAziendali.exceptions.NotFoundException;
 import com.example.ProgettoBE_U2_W2_D5_GestioneViaggiAziendali.model.Dipendente;
 import com.example.ProgettoBE_U2_W2_D5_GestioneViaggiAziendali.model.Prenotazione;
 import com.example.ProgettoBE_U2_W2_D5_GestioneViaggiAziendali.repository.PrenotazioneDAORepository;
@@ -40,7 +41,7 @@ public class PrenotazioneService {
             prenotazioneRepo.delete(prenotazioneTrovato.get());
             return "Prenotazione con id: " + id + " eliminato con successo!";
         } else {
-            throw new RuntimeException("Errore nel delete! Nessuna prenotazione trovata con id: " + id);
+            throw new NotFoundException("Errore nel delete! Nessuna prenotazione trovata con id: " + id);
         }
 
     }

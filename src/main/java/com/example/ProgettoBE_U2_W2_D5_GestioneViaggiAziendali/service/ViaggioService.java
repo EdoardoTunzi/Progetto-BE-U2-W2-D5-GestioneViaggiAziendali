@@ -1,6 +1,7 @@
 package com.example.ProgettoBE_U2_W2_D5_GestioneViaggiAziendali.service;
 
 import com.example.ProgettoBE_U2_W2_D5_GestioneViaggiAziendali.dto.ViaggioDTO;
+import com.example.ProgettoBE_U2_W2_D5_GestioneViaggiAziendali.exceptions.NotFoundException;
 import com.example.ProgettoBE_U2_W2_D5_GestioneViaggiAziendali.model.Dipendente;
 import com.example.ProgettoBE_U2_W2_D5_GestioneViaggiAziendali.model.StatoViaggio;
 import com.example.ProgettoBE_U2_W2_D5_GestioneViaggiAziendali.model.Viaggio;
@@ -53,7 +54,7 @@ public class ViaggioService {
             ViaggioDTO viaggiDto = fromViaggioToViaggioDTO(viaggio.get());
             return viaggiDto;
         } else {
-            throw new RuntimeException("Nessun viaggio trovato con l'id: " + id);
+            throw new NotFoundException("Nessun viaggio trovato con l'id: " + id);
         }
     }
 
@@ -68,7 +69,7 @@ public class ViaggioService {
             viaggio.setStato(viaggioDTO.getStato());
             viaggioRepo.save(viaggio);
         } else {
-            throw new RuntimeException("Errore nella modifica del viaggio inserito");
+            throw new NotFoundException("Errore nella modifica del viaggio inserito. Nessun viaggio trovato con l'id: " + id);
         }
     }
 
@@ -79,7 +80,7 @@ public class ViaggioService {
             viaggioRepo.delete(viaggioTrovato.get());
             return "Viaggio con id: " + id + " eliminato con successo!";
         } else {
-            throw new RuntimeException("Errore nel delete! Nessun viaggio trovato con id: " + id);
+            throw new NotFoundException("Errore nel delete! Nessun viaggio trovato con id: " + id);
         }
     }
 
@@ -92,7 +93,7 @@ public class ViaggioService {
             viaggiodaSalvare.setDipendente(dipendente.get());
             viaggioRepo.save(viaggiodaSalvare);
         } else {
-            throw new RuntimeException("Viaggio o Dipendente non trovato con id: " + dipendenteId);
+            throw new NotFoundException("Viaggio o Dipendente non trovato con id: " + dipendenteId);
         }
     }
 
@@ -104,7 +105,7 @@ public class ViaggioService {
             viaggioDaSalvare.setStato(statoViaggio);
             viaggioRepo.save(viaggioDaSalvare);
         } else {
-            throw new RuntimeException("Viaggio non trovato con id: " + viaggioId);
+            throw new NotFoundException("Viaggio non trovato con id: " + viaggioId);
         }
     }
 
