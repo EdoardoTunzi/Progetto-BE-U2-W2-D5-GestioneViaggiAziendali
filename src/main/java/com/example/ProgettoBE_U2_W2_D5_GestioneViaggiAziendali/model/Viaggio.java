@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.List;
+
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -28,6 +28,7 @@ public class Viaggio {
     @Enumerated(EnumType.STRING)
     private StatoViaggio stato;
 
-    @OneToMany
-    private List<Prenotazione> prenotazioni;
+    @ManyToOne
+    @JoinColumn(name = "dipendente_id")
+    private Dipendente dipendente;
 }

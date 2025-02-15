@@ -1,5 +1,6 @@
 package com.example.ProgettoBE_U2_W2_D5_GestioneViaggiAziendali.dto;
 
+import com.example.ProgettoBE_U2_W2_D5_GestioneViaggiAziendali.model.Dipendente;
 import com.example.ProgettoBE_U2_W2_D5_GestioneViaggiAziendali.model.StatoViaggio;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -20,4 +21,6 @@ public class ViaggioDTO {
 
     @NotNull(message = "Il campo stato è obbligatorio")
     private StatoViaggio stato;
+
+    private Dipendente dipendente;
 }

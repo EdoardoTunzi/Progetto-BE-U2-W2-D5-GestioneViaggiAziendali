@@ -1,6 +1,7 @@
 package com.example.ProgettoBE_U2_W2_D5_GestioneViaggiAziendali.controller;
 
 import com.example.ProgettoBE_U2_W2_D5_GestioneViaggiAziendali.dto.ViaggioDTO;
+import com.example.ProgettoBE_U2_W2_D5_GestioneViaggiAziendali.model.StatoViaggio;
 import com.example.ProgettoBE_U2_W2_D5_GestioneViaggiAziendali.service.ViaggioService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,6 +61,18 @@ public class ViaggioController {
             viaggioService.updateViaggio(viaggioDTO, id);
             return new ResponseEntity<>("Il viaggio è stato modificato correttamente", HttpStatus.OK);
         }
+    }
+
+    @PutMapping("assegnaDipendente/{viaggioId}/{dipendenteId}")
+    public ResponseEntity<?> assegnaDipendenteAViaggio(@PathVariable long viaggioId, @PathVariable long dipendenteId) {
+        viaggioService.addDipendente(viaggioId,dipendenteId);
+        return new ResponseEntity<>("Dipendente (id:"+dipendenteId+") aggiunto a viaggio ("+viaggioId+")", HttpStatus.OK);
+    }
+
+    @PatchMapping("modificaStato/{viaggioId}")
+    public ResponseEntity<?> modificaStatoDiViaggio(@PathVariable long viaggioId, @RequestBody StatoViaggio stato) {
+        viaggioService.modificaStatoViaggio(viaggioId, stato);
+        return new ResponseEntity<>("Stato del viaggio (id:"+viaggioId+") aggiornato", HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")

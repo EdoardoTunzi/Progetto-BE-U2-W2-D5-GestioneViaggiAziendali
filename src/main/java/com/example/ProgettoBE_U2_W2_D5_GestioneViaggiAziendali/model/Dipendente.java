@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
@@ -32,6 +31,6 @@ public class Dipendente {
 
     private String profilePic;
 
-    @OneToMany
-    public List<Prenotazione> prenotazioni;
+    /*@OneToMany
+    public List<Prenotazione> prenotazioni;*/
 }

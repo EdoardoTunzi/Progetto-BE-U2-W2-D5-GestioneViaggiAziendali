@@ -1,7 +1,10 @@
 package com.example.ProgettoBE_U2_W2_D5_GestioneViaggiAziendali.service;
 
 import com.example.ProgettoBE_U2_W2_D5_GestioneViaggiAziendali.dto.ViaggioDTO;
+import com.example.ProgettoBE_U2_W2_D5_GestioneViaggiAziendali.model.Dipendente;
+import com.example.ProgettoBE_U2_W2_D5_GestioneViaggiAziendali.model.StatoViaggio;
 import com.example.ProgettoBE_U2_W2_D5_GestioneViaggiAziendali.model.Viaggio;
+import com.example.ProgettoBE_U2_W2_D5_GestioneViaggiAziendali.repository.DipendenteDAORepository;
 import com.example.ProgettoBE_U2_W2_D5_GestioneViaggiAziendali.repository.ViaggioDAORepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,6 +20,8 @@ import java.util.Optional;
 public class ViaggioService {
     @Autowired
     ViaggioDAORepository viaggioRepo;
+    @Autowired
+    DipendenteDAORepository dipendenteRepo;
 
     //metodi dao
 
@@ -77,8 +82,33 @@ public class ViaggioService {
         } else {
             throw new RuntimeException("Errore nel delete! Nessun elemento trovato con questo id");
         }
-
     }
+
+    //ASSEGNAZIONE DIPENDENTE A VIAGGIO
+    public void addDipendente(long viaggioId, long dipendenteId) {
+        Optional<Viaggio> viaggio = viaggioRepo.findById(viaggioId);
+        Optional<Dipendente> dipendente = dipendenteRepo.findById(dipendenteId);
+        if (viaggio.isPresent() && dipendente.isPresent()) {
+            Viaggio viaggiodaSalvare = viaggio.get();
+            viaggiodaSalvare.setDipendente(dipendente.get());
+            viaggioRepo.save(viaggiodaSalvare);
+        } else {
+            throw new RuntimeException("Viaggio o Dipendente non trovato con questo id");
+        }
+    }
+    //modifica stato viaggio
+    public void modificaStatoViaggio(long viaggioId, StatoViaggio statoViaggio) {
+        Optional<Viaggio> viaggio = viaggioRepo.findById(viaggioId);
+        if (viaggio.isPresent()) {
+            Viaggio viaggiodaSalvare = viaggio.get();
+            viaggiodaSalvare.setStato(statoViaggio);
+            viaggioRepo.save(viaggiodaSalvare);
+        } else {
+            throw new RuntimeException("Viaggio non trovato con questo id");
+        }
+    }
+
+
 
     //metodi travaso DTO
 
@@ -88,6 +118,7 @@ public class ViaggioService {
         viaggio.setDestinazione(viaggioDTO.getDestinazione());
         viaggio.setData(viaggioDTO.getData());
         viaggio.setStato(viaggioDTO.getStato());
+        viaggio.setDipendente(viaggioDTO.getDipendente());
         return viaggio;
     }
 
@@ -97,6 +128,7 @@ public class ViaggioService {
         viaggioDTO.setDestinazione(viaggio.getDestinazione());
         viaggioDTO.setData(viaggio.getData());
         viaggioDTO.setStato(viaggio.getStato());
+        viaggioDTO.setDipendente(viaggio.getDipendente());
         return viaggioDTO;
     }
 }
