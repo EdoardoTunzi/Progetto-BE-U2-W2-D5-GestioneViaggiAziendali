@@ -49,7 +49,7 @@ public class ViaggioController {
     }
 
     @PutMapping("/modifica/{id}")
-    public ResponseEntity<?> updateViaggio(@RequestBody @Validated ViaggioDTO viaggioDTO,BindingResult validation, @PathVariable long id ) {
+    public ResponseEntity<?> updateViaggio(@RequestBody @Validated ViaggioDTO viaggioDTO, BindingResult validation, @PathVariable long id) {
         if (validation.hasErrors()) {
             String messaggioErrori = "ERRORE DI VALIDAZIONE \n";
 
@@ -65,18 +65,18 @@ public class ViaggioController {
 
     @PutMapping("assegnaDipendente/{viaggioId}/{dipendenteId}")
     public ResponseEntity<?> assegnaDipendenteAViaggio(@PathVariable long viaggioId, @PathVariable long dipendenteId) {
-        viaggioService.addDipendente(viaggioId,dipendenteId);
-        return new ResponseEntity<>("Dipendente (id:"+dipendenteId+") aggiunto a viaggio ("+viaggioId+")", HttpStatus.OK);
+        viaggioService.addDipendente(viaggioId, dipendenteId);
+        return new ResponseEntity<>("Dipendente (id:" + dipendenteId + ") aggiunto a viaggio (" + viaggioId + ")", HttpStatus.OK);
     }
 
     @PatchMapping("modificaStato/{viaggioId}")
     public ResponseEntity<?> modificaStatoDiViaggio(@PathVariable long viaggioId, @RequestBody StatoViaggio stato) {
         viaggioService.modificaStatoViaggio(viaggioId, stato);
-        return new ResponseEntity<>("Stato del viaggio (id:"+viaggioId+") aggiornato", HttpStatus.OK);
+        return new ResponseEntity<>("Stato del viaggio (id:" + viaggioId + ") aggiornato", HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteViaggio(@PathVariable long id) {
-        return new ResponseEntity<>(viaggioService.deleteVIaggio(id), HttpStatus.OK);
+        return new ResponseEntity<>(viaggioService.deleteViaggio(id), HttpStatus.OK);
     }
 }

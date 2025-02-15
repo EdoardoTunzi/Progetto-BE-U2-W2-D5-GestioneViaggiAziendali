@@ -31,6 +31,4 @@ public class Dipendente {
 
     private String profilePic;
 
-    /*@OneToMany
-    public List<Prenotazione> prenotazioni;*/
 }

@@ -23,7 +23,6 @@ public class ViaggioService {
     @Autowired
     DipendenteDAORepository dipendenteRepo;
 
-    //metodi dao
 
     //salvataggio
     public Long saveViaggio(ViaggioDTO viaggioDTO) {
@@ -54,7 +53,7 @@ public class ViaggioService {
             ViaggioDTO viaggiDto = fromViaggioToViaggioDTO(viaggio.get());
             return viaggiDto;
         } else {
-            throw new RuntimeException("Nessun viaggio trovato con l'id inserito");
+            throw new RuntimeException("Nessun viaggio trovato con l'id: " + id);
         }
     }
 
@@ -62,7 +61,7 @@ public class ViaggioService {
     public void updateViaggio(ViaggioDTO viaggioDTO, long id) {
         Optional<Viaggio> viaggioTrovato = viaggioRepo.findById(id);
 
-        if(viaggioTrovato.isPresent()) {
+        if (viaggioTrovato.isPresent()) {
             Viaggio viaggio = viaggioTrovato.get();
             viaggio.setDestinazione(viaggioDTO.getDestinazione());
             viaggio.setData(viaggioDTO.getData());
@@ -74,17 +73,17 @@ public class ViaggioService {
     }
 
     //deleteByID
-    public String deleteVIaggio(long id) {
+    public String deleteViaggio(long id) {
         Optional<Viaggio> viaggioTrovato = viaggioRepo.findById(id);
-        if (viaggioTrovato.isPresent()){
+        if (viaggioTrovato.isPresent()) {
             viaggioRepo.delete(viaggioTrovato.get());
             return "Viaggio con id: " + id + " eliminato con successo!";
         } else {
-            throw new RuntimeException("Errore nel delete! Nessun elemento trovato con questo id");
+            throw new RuntimeException("Errore nel delete! Nessun viaggio trovato con id: " + id);
         }
     }
 
-    //ASSEGNAZIONE DIPENDENTE A VIAGGIO
+    //Assegnazione dipendente a viaggio
     public void addDipendente(long viaggioId, long dipendenteId) {
         Optional<Viaggio> viaggio = viaggioRepo.findById(viaggioId);
         Optional<Dipendente> dipendente = dipendenteRepo.findById(dipendenteId);
@@ -93,24 +92,24 @@ public class ViaggioService {
             viaggiodaSalvare.setDipendente(dipendente.get());
             viaggioRepo.save(viaggiodaSalvare);
         } else {
-            throw new RuntimeException("Viaggio o Dipendente non trovato con questo id");
+            throw new RuntimeException("Viaggio o Dipendente non trovato con id: " + dipendenteId);
         }
     }
-    //modifica stato viaggio
+
+    //Modifica stato viaggio
     public void modificaStatoViaggio(long viaggioId, StatoViaggio statoViaggio) {
         Optional<Viaggio> viaggio = viaggioRepo.findById(viaggioId);
         if (viaggio.isPresent()) {
-            Viaggio viaggiodaSalvare = viaggio.get();
-            viaggiodaSalvare.setStato(statoViaggio);
-            viaggioRepo.save(viaggiodaSalvare);
+            Viaggio viaggioDaSalvare = viaggio.get();
+            viaggioDaSalvare.setStato(statoViaggio);
+            viaggioRepo.save(viaggioDaSalvare);
         } else {
-            throw new RuntimeException("Viaggio non trovato con questo id");
+            throw new RuntimeException("Viaggio non trovato con id: " + viaggioId);
         }
     }
 
 
-
-    //metodi travaso DTO
+    //-----------------------------metodi travaso DTO-----------------------------
 
     //Viaggio a Viaggio DTO
     public Viaggio fromViaggioDTOToViaggio(ViaggioDTO viaggioDTO) {

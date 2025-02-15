@@ -76,14 +76,14 @@ public class DipendenteController {
             Long idNuovoDipendente = dipendenteService.saveDipendente(dipendenteDTO);
             return new ResponseEntity<>("Dipendente inserito nel DB con id: " + idNuovoDipendente, HttpStatus.CREATED);
         } catch (IOException e) {
-            throw new RuntimeException("Errore nel caricamento dell'immagine: " + e );
+            throw new RuntimeException("Errore nel caricamento dell'immagine: " + e);
         }
 
 
     }
 
     @PutMapping("/modifica/{id}")
-    public ResponseEntity<?> updateDipendente(@RequestBody @Validated DipendenteDTO dipendenteDTO,BindingResult validation, @PathVariable long id ) {
+    public ResponseEntity<?> updateDipendente(@RequestBody @Validated DipendenteDTO dipendenteDTO, BindingResult validation, @PathVariable long id) {
         if (validation.hasErrors()) {
             String messaggioErrori = "ERRORE DI VALIDAZIONE \n";
 
@@ -98,7 +98,7 @@ public class DipendenteController {
     }
 
     @PostMapping("/nuovaPrenotazione")
-    public ResponseEntity<?> creaNuovaPrenotazione(@RequestBody @Validated PrenotazioneDTO prenotazioneDTO,BindingResult validation) {
+    public ResponseEntity<?> creaNuovaPrenotazione(@RequestBody @Validated PrenotazioneDTO prenotazioneDTO, BindingResult validation) {
         if (validation.hasErrors()) {
             String messaggioErrori = "ERRORE DI VALIDAZIONE \n";
 

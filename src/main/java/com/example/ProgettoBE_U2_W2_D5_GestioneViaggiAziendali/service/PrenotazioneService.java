@@ -20,6 +20,8 @@ public class PrenotazioneService {
     @Autowired
     PrenotazioneDAORepository prenotazioneRepo;
 
+    //Ho aggiunti solo dei metodi base per controllare rapidamente da Postman che fossero state create le prenotazioni
+
     public Page<PrenotazioneDTO> getAllPrenotazioni(Pageable page) {
         Page<Prenotazione> listaPrenotazioni = prenotazioneRepo.findAll(page);
         List<PrenotazioneDTO> listaDto = new ArrayList<>();
@@ -28,7 +30,6 @@ public class PrenotazioneService {
             PrenotazioneDTO dto = fromPrenotazioneToDTO(prenotazione);
             listaDto.add(dto);
         }
-
         Page<PrenotazioneDTO> listaPage = new PageImpl<>(listaDto);
         return listaPage;
     }
@@ -39,11 +40,11 @@ public class PrenotazioneService {
             prenotazioneRepo.delete(prenotazioneTrovato.get());
             return "Prenotazione con id: " + id + " eliminato con successo!";
         } else {
-            throw new RuntimeException("Errore nel delete! Nessuna prenotazione trovata con questo id");
+            throw new RuntimeException("Errore nel delete! Nessuna prenotazione trovata con id: " + id);
         }
 
     }
-
+    //travaso DTO
     public PrenotazioneDTO fromPrenotazioneToDTO(Prenotazione prenotazione) {
         PrenotazioneDTO prenotazioneDTO = new PrenotazioneDTO();
         prenotazioneDTO.setDipendente_id(prenotazione.getDipendente().getId());

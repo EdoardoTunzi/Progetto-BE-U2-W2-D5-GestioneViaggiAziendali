@@ -2,7 +2,6 @@ package com.example.ProgettoBE_U2_W2_D5_GestioneViaggiAziendali.service;
 
 import com.example.ProgettoBE_U2_W2_D5_GestioneViaggiAziendali.dto.DipendenteDTO;
 import com.example.ProgettoBE_U2_W2_D5_GestioneViaggiAziendali.dto.PrenotazioneDTO;
-import com.example.ProgettoBE_U2_W2_D5_GestioneViaggiAziendali.dto.ViaggioDTO;
 import com.example.ProgettoBE_U2_W2_D5_GestioneViaggiAziendali.model.Dipendente;
 import com.example.ProgettoBE_U2_W2_D5_GestioneViaggiAziendali.model.Prenotazione;
 import com.example.ProgettoBE_U2_W2_D5_GestioneViaggiAziendali.model.Viaggio;
@@ -15,7 +14,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +27,7 @@ public class DipendenteService {
     ViaggioDAORepository viaggioRepo;
     @Autowired
     PrenotazioneDAORepository prenotazioneRepo;
+
 
     //salvataggio
     public Long saveDipendente(DipendenteDTO dipendenteDTO) {
@@ -59,7 +58,7 @@ public class DipendenteService {
             DipendenteDTO dipendenteDto = fromDipendenteToDipendenteDTO(dipendente.get());
             return dipendenteDto;
         } else {
-            throw new RuntimeException("Nessun dipendente trovato con l'id inserito");
+            throw new RuntimeException("Nessun dipendente trovato con l'id: " + id);
         }
     }
 
@@ -87,7 +86,7 @@ public class DipendenteService {
             dipendenteRepo.delete(dipendenteTrovato.get());
             return "Dipendente con id: " + id + " eliminato con successo!";
         } else {
-            throw new RuntimeException("Errore nel delete! Nessun dipendente trovato con questo id");
+            throw new RuntimeException("Errore nel delete! Nessun dipendente trovato con id: " + id);
         }
 
     }
@@ -103,7 +102,8 @@ public class DipendenteService {
 
             List<Prenotazione> prenotazioniEsistentiConLaStessaData = prenotazioneRepo.findByDataAndDipendente(dataPrenotazione, dipendente);
             List<Prenotazione> prenotazioniDelDipendente = prenotazioneRepo.findByDipendente(dipendente);
-            //controllo se ha gia una prenotazione nella stessa data
+            //prima di creare la prenotazione, controllo che il dipendente
+            //non abbia gia una prenotazione nella stessa data e altre prenotazioni
             if (!prenotazioniEsistentiConLaStessaData.isEmpty()) {
                 throw new RuntimeException("Il dipendente selezionato ha gia una prenotazione con la stessa data");
             } else if (!prenotazioniDelDipendente.isEmpty()) {
@@ -116,7 +116,6 @@ public class DipendenteService {
                 prenotazione.setNotePreferenze(prenotazioneDTO.getNotePreferenze());
                 prenotazioneRepo.save(prenotazione);
             }
-
         } else {
             throw new RuntimeException(" L'id del viaggio o del dipendente non è stato trovato");
         }
