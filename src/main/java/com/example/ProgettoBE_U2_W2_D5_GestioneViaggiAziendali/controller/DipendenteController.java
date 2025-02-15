@@ -1,6 +1,7 @@
 package com.example.ProgettoBE_U2_W2_D5_GestioneViaggiAziendali.controller;
 
 import com.example.ProgettoBE_U2_W2_D5_GestioneViaggiAziendali.dto.DipendenteDTO;
+import com.example.ProgettoBE_U2_W2_D5_GestioneViaggiAziendali.dto.PrenotazioneDTO;
 import com.example.ProgettoBE_U2_W2_D5_GestioneViaggiAziendali.service.DipendenteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -59,6 +60,22 @@ public class DipendenteController {
             dipendenteService.updateDipendente(dipendenteDTO, id);
             return new ResponseEntity<>("Il dipendente è stato modificato correttamente", HttpStatus.OK);
         }
+    }
+
+    @PostMapping("/nuovaPrenotazione")
+    public ResponseEntity<?> creaNuovaPrenotazione(@RequestBody @Validated PrenotazioneDTO prenotazioneDTO,BindingResult validation) {
+        if (validation.hasErrors()) {
+            String messaggioErrori = "ERRORE DI VALIDAZIONE \n";
+
+            for (ObjectError errore : validation.getAllErrors()) {
+                messaggioErrori += errore.getDefaultMessage() + "\n";
+            }
+            return new ResponseEntity<>(messaggioErrori, HttpStatus.BAD_REQUEST);
+        } else {
+            dipendenteService.creaPrenotazione(prenotazioneDTO);
+            return new ResponseEntity<>("La prenotazione è stata creata con correttamente", HttpStatus.OK);
+        }
+
     }
 
     @DeleteMapping("/delete/{id}")

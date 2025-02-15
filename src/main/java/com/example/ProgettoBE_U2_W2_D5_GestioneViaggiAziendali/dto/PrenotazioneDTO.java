@@ -13,14 +13,12 @@ import java.time.LocalDate;
 @Data
 public class PrenotazioneDTO {
     @NotNull(message = "Il campo viaggio è obbligatorio")
-    @NotBlank(message = "Il campo viaggio non può essere vuoto")
-    private Viaggio viaggio;
+
+    private long viaggio_id;
     @NotNull(message = "Il campo dipendente è obbligatorio")
-    @NotBlank(message = "Il campo dipendente non può essere vuoto")
-    private Dipendente dipendente;
+    private long dipendente_id;
     @NotNull(message = "Il campo data è obbligatorio")
-    @NotBlank(message = "Il campo data non può essere vuoto")
     private LocalDate data;
     @Size(max = 200, message = "Le preferenze possono avere max 200 caratteri")
-    private String preferenze;
+    private String notePreferenze;
 }

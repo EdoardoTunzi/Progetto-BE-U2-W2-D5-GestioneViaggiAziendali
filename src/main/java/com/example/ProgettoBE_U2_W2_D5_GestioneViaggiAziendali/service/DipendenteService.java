@@ -1,16 +1,21 @@
 package com.example.ProgettoBE_U2_W2_D5_GestioneViaggiAziendali.service;
 
 import com.example.ProgettoBE_U2_W2_D5_GestioneViaggiAziendali.dto.DipendenteDTO;
+import com.example.ProgettoBE_U2_W2_D5_GestioneViaggiAziendali.dto.PrenotazioneDTO;
 import com.example.ProgettoBE_U2_W2_D5_GestioneViaggiAziendali.dto.ViaggioDTO;
 import com.example.ProgettoBE_U2_W2_D5_GestioneViaggiAziendali.model.Dipendente;
+import com.example.ProgettoBE_U2_W2_D5_GestioneViaggiAziendali.model.Prenotazione;
 import com.example.ProgettoBE_U2_W2_D5_GestioneViaggiAziendali.model.Viaggio;
 import com.example.ProgettoBE_U2_W2_D5_GestioneViaggiAziendali.repository.DipendenteDAORepository;
+import com.example.ProgettoBE_U2_W2_D5_GestioneViaggiAziendali.repository.PrenotazioneDAORepository;
+import com.example.ProgettoBE_U2_W2_D5_GestioneViaggiAziendali.repository.ViaggioDAORepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -19,6 +24,10 @@ import java.util.Optional;
 public class DipendenteService {
     @Autowired
     DipendenteDAORepository dipendenteRepo;
+    @Autowired
+    ViaggioDAORepository viaggioRepo;
+    @Autowired
+    PrenotazioneDAORepository prenotazioneRepo;
     //salvataggio
     public Long saveDipendente(DipendenteDTO dipendenteDTO) {
         Dipendente dipendenteInserito = fromDipendenteDTOToDipendente(dipendenteDTO);
@@ -78,6 +87,24 @@ public class DipendenteService {
             throw new RuntimeException("Errore nel delete! Nessun dipendente trovato con questo id");
         }
 
+    }
+
+    //creazione prenotazione
+    public void creaPrenotazione(PrenotazioneDTO prenotazioneDTO) {
+        Optional<Dipendente> dipendenteTrovato = dipendenteRepo.findById(prenotazioneDTO.getDipendente_id());
+        Optional<Viaggio> viaggioTrovato = viaggioRepo.findById(prenotazioneDTO.getViaggio_id());
+        if(dipendenteTrovato.isPresent() && viaggioTrovato.isPresent()) {
+            Dipendente dipendente = dipendenteTrovato.get();
+            Viaggio viaggio = viaggioTrovato.get();
+            Prenotazione prenotazione = new Prenotazione();
+            prenotazione.setDipendente(dipendente);
+            prenotazione.setViaggio(viaggio);
+            prenotazione.setData(prenotazioneDTO.getData());
+            prenotazione.setNotePreferenze(prenotazioneDTO.getNotePreferenze());
+            prenotazioneRepo.save(prenotazione);
+        } else {
+            throw new RuntimeException(" L'id del viaggio o del dipendente non è stato trovato");
+        }
     }
 
 
